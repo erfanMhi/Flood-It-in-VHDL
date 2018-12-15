@@ -58,7 +58,7 @@ architecture Behavioral of Square is
 		constant column_width: std_logic_vector(10 downto 0) := "00000000100";
 	begin
 		if (ScanlineX >= multiply(column, row_width) AND ScanlineY >= multiply(row, column_width) AND ScanlineX < (multiply(column, row_width)+row_width) AND ScanlineY < (multiply(row, column_width)+column_width)) then
-			color_cell := "111111000000";
+			color_cell := "000000000000";
 		else  
 			color_cell := "111111111111";
 		end if;
@@ -97,7 +97,7 @@ architecture Behavioral of Square is
 		end if;
 		
 		if x <= 40 and x >= -40 and (ScanlineY < y1_t+1 and ScanlineY > y2_t-1 and ScanlineX < x1_t+1 and ScanlineX > x2_t-1)then
-			color_line := "111111100000";
+			color_line := "000000000000";
 			
 		else
 			color_line := "111111111111";
@@ -142,6 +142,26 @@ begin
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(470, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(470, 11)), std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(410, 11)), ScanlineX, ScanlineY);
+		
+		-- up arrow
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(260, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(430, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(260, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(410, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(410, 11)), ScanlineX, ScanlineY);
+		
+		-- down arrow
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(450, 11)), std_logic_vector(to_unsigned(420, 11)), std_logic_vector(to_unsigned(450, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(450, 11)), std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(420, 11)), std_logic_vector(to_unsigned(450, 11)), std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		
+		-- right arrow
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(500, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(470, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
+		
+		
 		--ColorOutput :=	colorize_cell("00001100010", "00000111010", ScanlineX, ScanlineY) and (ColorOutput) and draw_line(std_logic_vector(to_unsigned(16, 10)), std_logic_vector(to_unsigned(320, 10)), std_logic_vector(to_unsigned(0, 10)), std_logic_vector(to_unsigned(338, 10)), ScanlineX, ScanlineY);
 	end process;
 	--ColorOutput <=	not (not colorize_cell("00001100010", "00000111010", ScanlineX, ScanlineY) or (not ((ScanlineX < std_logic_vector(to_unsigned(213, 10))) and (ScanlineX > std_logic_vector(to_unsigned(0, 10))) and (ScanlineY > std_logic_vector(to_unsigned(50, 10))) and (ScanlineY < std_logic_vector(to_unsigned(60, 10))))));
