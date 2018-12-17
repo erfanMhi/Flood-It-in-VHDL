@@ -162,12 +162,13 @@ begin
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(50, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(430, 11)), ScanlineX, ScanlineY);
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(430, 11)), ScanlineX, ScanlineY);
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(50, 11)), ScanlineX, ScanlineY);
-		
-		
-		--ColorOutput :=	colorize_cell("00001100010", "00000111010", ScanlineX, ScanlineY) and (ColorOutput) and draw_line(std_logic_vector(to_unsigned(16, 10)), std_logic_vector(to_unsigned(320, 10)), std_logic_vector(to_unsigned(0, 10)), std_logic_vector(to_unsigned(338, 10)), ScanlineX, ScanlineY);
+	
+		-- colored cells
+		ColorOutput :=	Coloroutput and colorize_cell("00000101110", "00000100110", ScanlineX, ScanlineY);
+		ColorOutput :=	Coloroutput and colorize_cell("00000001110", "00000010110", ScanlineX, ScanlineY);
+		ColorOutput :=	Coloroutput and colorize_cell("00000010110", "00001000110", ScanlineX, ScanlineY);
+		ColorOutput :=	Coloroutput and colorize_cell("00000100110", "00000010110", ScanlineX, ScanlineY);
 	end process;
-	--ColorOutput <=	not (not colorize_cell("00001100010", "00000111010", ScanlineX, ScanlineY) or (not ((ScanlineX < std_logic_vector(to_unsigned(213, 10))) and (ScanlineX > std_logic_vector(to_unsigned(0, 10))) and (ScanlineY > std_logic_vector(to_unsigned(50, 10))) and (ScanlineY < std_logic_vector(to_unsigned(60, 10))))));
-
 	ColorOut <= ColorOutput;
 	
 	SquareXmax <= "1010000000"-SquareWidth; -- (640 - SquareWidth)
