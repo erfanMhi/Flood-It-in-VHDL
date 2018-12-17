@@ -138,28 +138,30 @@ begin
 		end if;
 		
 		-- left arrow
-		Coloroutput := draw_line(std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(180, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(470, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(470, 11)), std_logic_vector(to_unsigned(115, 11)), std_logic_vector(to_unsigned(410, 11)), ScanlineX, ScanlineY);
+		Coloroutput := draw_line(std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(455, 11)), std_logic_vector(to_unsigned(330, 11)), std_logic_vector(to_unsigned(455, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(455, 11)), std_logic_vector(to_unsigned(310, 11)), std_logic_vector(to_unsigned(445, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(455, 11)), std_logic_vector(to_unsigned(310, 11)), std_logic_vector(to_unsigned(465, 11)), ScanlineX, ScanlineY);
 		
 		-- up arrow
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(260, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(430, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(260, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(410, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(300, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(280, 11)), std_logic_vector(to_unsigned(410, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(335, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(335, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(335, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(345, 11)), std_logic_vector(to_unsigned(450, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(335, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(325, 11)), std_logic_vector(to_unsigned(450, 11)), ScanlineX, ScanlineY);
 		
 		-- down arrow
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(450, 11)), std_logic_vector(to_unsigned(420, 11)), std_logic_vector(to_unsigned(450, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(450, 11)), std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(420, 11)), std_logic_vector(to_unsigned(450, 11)), std_logic_vector(to_unsigned(400, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(355, 11)), std_logic_vector(to_unsigned(460, 11)), std_logic_vector(to_unsigned(345, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(335, 11)), std_logic_vector(to_unsigned(460, 11)), std_logic_vector(to_unsigned(345, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(345, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(345, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
 		
 		-- right arrow
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(500, 11)), std_logic_vector(to_unsigned(440, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(470, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(410, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
-		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(565, 11)), std_logic_vector(to_unsigned(470, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(440, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(455, 11)), std_logic_vector(to_unsigned(350, 11)), std_logic_vector(to_unsigned(455, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(455, 11)), std_logic_vector(to_unsigned(370, 11)), std_logic_vector(to_unsigned(465, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(380, 11)), std_logic_vector(to_unsigned(455, 11)), std_logic_vector(to_unsigned(370, 11)), std_logic_vector(to_unsigned(445, 11)), ScanlineX, ScanlineY);
+		
+		-- rectangle
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(50, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(50, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(50, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(430, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(80, 11)), std_logic_vector(to_unsigned(430, 11)), ScanlineX, ScanlineY);
+		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(50, 11)), ScanlineX, ScanlineY);
 		
 		
 		--ColorOutput :=	colorize_cell("00001100010", "00000111010", ScanlineX, ScanlineY) and (ColorOutput) and draw_line(std_logic_vector(to_unsigned(16, 10)), std_logic_vector(to_unsigned(320, 10)), std_logic_vector(to_unsigned(0, 10)), std_logic_vector(to_unsigned(338, 10)), ScanlineX, ScanlineY);
