@@ -7,7 +7,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity Square is
+use work.fpga_graphic.all;
+entity Board is
   port ( CLK_50MHz		: in std_logic;
 			RESET				: in std_logic;
 			ColorOut			: out std_logic_vector(11 downto 0); -- RED & GREEN & BLUE
@@ -15,14 +16,17 @@ entity Square is
 			ScanlineX		: in std_logic_vector(10 downto 0);
 			ScanlineY		: in std_logic_vector(10 downto 0)
   );
-end Square;
+end Board;
 
-architecture Behavioral of Square is
+architecture Behavioral of Board is
   
   shared variable ColorOutput: std_logic_vector(11 downto 0);
   
   signal column_width: std_logic_vector(9 downto 0) := "0000000001";
   signal row_width: std_logic_vector(9 downto 0) := "0000000001";
+  
+  signal food_size: std_logic_vector(10 downto 0) := "00000010110";
+  signal food_inc: boolean:= false;
   
   signal SquareX: std_logic_vector(9 downto 0) := "0000001110";  
   signal SquareY: std_logic_vector(9 downto 0) := "0000010111";  
@@ -33,17 +37,9 @@ architecture Behavioral of Square is
   constant SquareYmin: std_logic_vector(9 downto 0) := "0000000001";
   signal SquareYmax: std_logic_vector(9 downto 0); -- := "0111100000"-SquareWidth;
   signal ColorSelect: std_logic_vector(2 downto 0) := "001";
-  signal Prescaler: std_logic_vector(30 downto 0) := (others => '0');
+  signal Prescaler: std_logic_vector(40 downto 0) := (others => '0');
   
-  function signed_multiply(a,b: std_logic_vector(10 downto 0)) return std_logic_vector is
-		variable ans:std_logic_vector(21 downto 0);
-  begin
-		ans := std_logic_vector(signed(a) * signed(b));
-		return ans;
-  
-  end function signed_multiply;
-  
- function multiply(a,b: std_logic_vector(10 downto 0)) return std_logic_vector is
+   function multiply(a,b: std_logic_vector(10 downto 0)) return std_logic_vector is
 		variable ans:std_logic_vector(10 downto 0);
   begin
 		ans := std_logic_vector(unsigned(a) * unsigned(b))(10 downto 0);
@@ -51,13 +47,29 @@ architecture Behavioral of Square is
   
   end function multiply;
   
+	procedure to_grid(variable   x,y   : in std_logic_vector;
+                            variable row, column    : out    std_logic_vector) is
+		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
+		constant column_width: std_logic_vector(10 downto 0) := "00000000100"; 
+    begin
+		row := multiply(x, row_width);
+		column := multiply(y, column_width);
+    end procedure;
+
+  
+
+  
   
   function colorize_cell(row, column, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
 		variable color_cell:std_logic_vector(11 downto 0);
 		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
 		constant column_width: std_logic_vector(10 downto 0) := "00000000100";
+		variable r, c: std_logic_vector(10 downto 0);
 	begin
-		if (ScanlineX >= multiply(column, row_width) AND ScanlineY >= multiply(row, column_width) AND ScanlineX < (multiply(column, row_width)+row_width) AND ScanlineY < (multiply(row, column_width)+column_width)) then
+		r := row;
+		c := column;
+		to_grid(r, c, r, c);
+		if (ScanlineX >= c AND ScanlineY >= r AND ScanlineX < (c+row_width) AND ScanlineY < (r+column_width)) then
 			color_cell := "000000000000";
 		else  
 			color_cell := "111111111111";
@@ -74,7 +86,7 @@ architecture Behavioral of Square is
   
   end function division;
 	
-	function draw_line(x1, y1, x2, y2, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
+  function draw_line(x1, y1, x2, y2, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
 		variable color_line:std_logic_vector(11 downto 0);
 		variable x: integer;
 		variable x1_t, x2_t, y1_t, y2_t: std_logic_vector(10 downto 0);
@@ -104,6 +116,27 @@ architecture Behavioral of Square is
 		end if;
 		return color_line;
 	end function draw_line;
+	
+	function draw_circle(x1, y1, r, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
+		variable color_line:std_logic_vector(11 downto 0);
+		variable x: integer;
+		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
+		constant column_width: std_logic_vector(10 downto 0) := "00000000100";
+		variable row, column: std_logic_vector(10 downto 0);
+	begin
+		row := x1;
+		column := y1;
+		to_grid(row, column, row, column);
+		x := ((to_integer(unsigned(row))-to_integer(unsigned(ScanlineX))) * (to_integer(unsigned(row))-to_integer(unsigned(ScanlineX)))) + ((to_integer(unsigned(column))-to_integer(unsigned(ScanlineY))) * (to_integer(unsigned(column))-to_integer(unsigned(ScanlineY))));
+		
+		if x <= to_integer(unsigned(r)) then
+			color_line := "000000001001";
+			
+		else
+			color_line := "111111111111";
+		end if;
+		return color_line;
+	end function draw_circle;
 
 begin
 
@@ -118,10 +151,18 @@ begin
 			ColorSelect <= "001";
 		elsif rising_edge(CLK_50Mhz) then
 			Prescaler <= Prescaler + 1;	 
-			if Prescaler = "11000011010100000" then  -- Activated every 0,002 sec (2 msec)
+			if Prescaler = "0000000000000000000100000000000000000000" then  -- Activated every 0,002 sec (2 msec)
 				Prescaler <= (others => '0');
-				
-				--ColorOutput <= not ((not ColorOutput) or (not ((ScanlineX < std_logic_vector(to_unsigned(213, 10))) and (ScanlineX > std_logic_vector(to_unsigned(0, 10))) and (ScanlineY > std_logic_vector(to_unsigned(50, 10))) and (ScanlineY < std_logic_vector(to_unsigned(60, 10))))));
+				if food_size = "00000010110" then
+					food_inc <= false;
+				elsif food_size = "00000000001" then
+					food_inc <= true;
+				end if;
+				if food_inc = true then
+					food_size <= food_size +1;
+				else
+					food_size <= food_size -1;
+				end if;
 			end if;
 		end if;
 	end process PrescalerCounter;
@@ -164,10 +205,12 @@ begin
 		Coloroutput := Coloroutput and draw_line(std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(430, 11)), std_logic_vector(to_unsigned(600, 11)), std_logic_vector(to_unsigned(50, 11)), ScanlineX, ScanlineY);
 	
 		-- colored cells
+		ColorOutput :=	Coloroutput and colorize_cell("00000101111", "00000100110", ScanlineX, ScanlineY);
 		ColorOutput :=	Coloroutput and colorize_cell("00000101110", "00000100110", ScanlineX, ScanlineY);
-		ColorOutput :=	Coloroutput and colorize_cell("00000001110", "00000010110", ScanlineX, ScanlineY);
-		ColorOutput :=	Coloroutput and colorize_cell("00000010110", "00001000110", ScanlineX, ScanlineY);
-		ColorOutput :=	Coloroutput and colorize_cell("00000100110", "00000010110", ScanlineX, ScanlineY);
+		ColorOutput :=	Coloroutput and colorize_cell("00000101110", "00000100111", ScanlineX, ScanlineY);
+		ColorOutput :=	Coloroutput and colorize_cell("00000101110", "00000101000", ScanlineX, ScanlineY);
+		--ColorOutput :=	Coloroutput and colorize_cell("00000100110", "00000010110", ScanlineX, ScanlineY);
+		ColorOutput :=	Coloroutput and draw_circle("00000100110", "00000010110", food_size, ScanlineX, ScanlineY);
 	end process;
 	ColorOut <= ColorOutput;
 	
