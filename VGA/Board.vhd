@@ -7,7 +7,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-use work.fpga_graphic.all;
+LIBRARY work;
+use work.Graphic_Lab.all;
 entity Board is
   port ( CLK_50MHz		: in std_logic;
 			RESET				: in std_logic;
@@ -38,105 +39,6 @@ architecture Behavioral of Board is
   signal SquareYmax: std_logic_vector(9 downto 0); -- := "0111100000"-SquareWidth;
   signal ColorSelect: std_logic_vector(2 downto 0) := "001";
   signal Prescaler: std_logic_vector(40 downto 0) := (others => '0');
-  
-   function multiply(a,b: std_logic_vector(10 downto 0)) return std_logic_vector is
-		variable ans:std_logic_vector(10 downto 0);
-  begin
-		ans := std_logic_vector(unsigned(a) * unsigned(b))(10 downto 0);
-		return ans;
-  
-  end function multiply;
-  
-	procedure to_grid(variable   x,y   : in std_logic_vector;
-                            variable row, column    : out    std_logic_vector) is
-		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
-		constant column_width: std_logic_vector(10 downto 0) := "00000000100"; 
-    begin
-		row := multiply(x, row_width);
-		column := multiply(y, column_width);
-    end procedure;
-
-  
-
-  
-  
-  function colorize_cell(row, column, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
-		variable color_cell:std_logic_vector(11 downto 0);
-		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
-		constant column_width: std_logic_vector(10 downto 0) := "00000000100";
-		variable r, c: std_logic_vector(10 downto 0);
-	begin
-		r := row;
-		c := column;
-		to_grid(r, c, r, c);
-		if (ScanlineX >= c AND ScanlineY >= r AND ScanlineX < (c+row_width) AND ScanlineY < (r+column_width)) then
-			color_cell := "000000000000";
-		else  
-			color_cell := "111111111111";
-		end if;
-		return color_cell;
-		
-	end function colorize_cell;
-	
-  function division(a,b: std_logic_vector(10 downto 0)) return std_logic_vector is
-		variable ans:std_logic_vector(10 downto 0);
-  begin
-		ans := std_logic_vector(resize(unsigned(a) / unsigned(b),a'length));
-		return ans;
-  
-  end function division;
-	
-  function draw_line(x1, y1, x2, y2, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
-		variable color_line:std_logic_vector(11 downto 0);
-		variable x: integer;
-		variable x1_t, x2_t, y1_t, y2_t: std_logic_vector(10 downto 0);
-	begin
-		x := ((to_integer(unsigned(ScanlineY)) - to_integer(unsigned(y1))) * (to_integer(unsigned(x2))-to_integer(unsigned(x1)))) - ((to_integer(unsigned(y2)) - to_integer(unsigned(y1))) * (to_integer(unsigned(ScanlineX))-to_integer(unsigned(x1))));
-		if x1 > x2 then
-			x1_t := x1;
-			x2_t := x2;
-		else
-			x2_t := x1;
-			x1_t := x2;		
-		end if;
-		
-		if y1 > y2 then
-			y1_t := y1;
-			y2_t := y2;
-		else
-			y2_t := y1;
-			y1_t := y2;		
-		end if;
-		
-		if x <= 40 and x >= -40 and (ScanlineY < y1_t+1 and ScanlineY > y2_t-1 and ScanlineX < x1_t+1 and ScanlineX > x2_t-1)then
-			color_line := "000000000000";
-			
-		else
-			color_line := "111111111111";
-		end if;
-		return color_line;
-	end function draw_line;
-	
-	function draw_circle(x1, y1, r, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
-		variable color_line:std_logic_vector(11 downto 0);
-		variable x: integer;
-		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
-		constant column_width: std_logic_vector(10 downto 0) := "00000000100";
-		variable row, column: std_logic_vector(10 downto 0);
-	begin
-		row := x1;
-		column := y1;
-		to_grid(row, column, row, column);
-		x := ((to_integer(unsigned(row))-to_integer(unsigned(ScanlineX))) * (to_integer(unsigned(row))-to_integer(unsigned(ScanlineX)))) + ((to_integer(unsigned(column))-to_integer(unsigned(ScanlineY))) * (to_integer(unsigned(column))-to_integer(unsigned(ScanlineY))));
-		
-		if x <= to_integer(unsigned(r)) then
-			color_line := "000000001001";
-			
-		else
-			color_line := "111111111111";
-		end if;
-		return color_line;
-	end function draw_circle;
 
 begin
 
