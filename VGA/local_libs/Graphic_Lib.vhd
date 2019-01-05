@@ -8,38 +8,41 @@ library Work;
 use work.Arithmatic_Lib.all;
 
 package Graphic_Lab is
-  procedure to_grid(variable   x,y   : in std_logic_vector;
+	procedure to_grid(variable   x,y   : in std_logic_vector;
+							variable cell_width : in std_logic_vector(10 downto 0);
                             variable row, column    : out    std_logic_vector);
-  function colorize_cell(row, column, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector;
-  function division(a,b: std_logic_vector(10 downto 0)) return std_logic_vector;
+	function colorize_cell(row, column, ScanlineX, ScanlineY: std_logic_vector(10 downto 0); 
+								cell_color: std_logic_vector(11 downto 0) := (others => '0');
+								cell_width: std_logic_vector(10 downto 0) := "00000001000") return std_logic_vector;
+	function division(a,b: std_logic_vector(10 downto 0)) return std_logic_vector;
 	function draw_line(x1, y1, x2, y2, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector;
 	function draw_circle(x1, y1, r, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector;
-	end Graphic_Lab;
+	function convSEG (N : std_logic_vector(3 downto 0)) return std_logic_vector;
+	
+end Graphic_Lab;
 
 package body Graphic_Lab is
  
-
-  
 	procedure to_grid(variable   x,y   : in std_logic_vector;
-                            variable row, column    : out    std_logic_vector) is
-		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
-		constant column_width: std_logic_vector(10 downto 0) := "00000000100"; 
+							variable cell_width : in std_logic_vector(10 downto 0);
+                     variable row, column    : out    std_logic_vector) is
     begin
-		row := multiply(x, row_width);
-		column := multiply(y, column_width);
+		row := multiply(x, cell_width);
+		column := multiply(y, cell_width);
     end procedure;
   
-  function colorize_cell(row, column, ScanlineX, ScanlineY: std_logic_vector(10 downto 0)) return std_logic_vector is
+  function colorize_cell(row, column, ScanlineX, ScanlineY: std_logic_vector(10 downto 0);
+			cell_color: std_logic_vector(11 downto 0) := (others => '0');
+			cell_width: std_logic_vector(10 downto 0) := "00000001000") return std_logic_vector is
 		variable color_cell:std_logic_vector(11 downto 0);
-		constant row_width: std_logic_vector(10 downto 0) := "00000000100";
-		constant column_width: std_logic_vector(10 downto 0) := "00000000100";
-		variable r, c: std_logic_vector(10 downto 0);
+		variable r, c, c_w: std_logic_vector(10 downto 0);
 	begin
 		r := row;
 		c := column;
-		to_grid(r, c, r, c);
-		if (ScanlineX >= c AND ScanlineY >= r AND ScanlineX < (c+row_width) AND ScanlineY < (r+column_width)) then
-			color_cell := "000000000000";
+		c_w := cell_width;
+		to_grid(r, c, c_w, r, c);
+		if (ScanlineX >= c AND ScanlineY >= r AND ScanlineX < (c+c_w) AND ScanlineY < (r+c_w)) then
+			color_cell := cell_color;
 		else  
 			color_cell := "111111111111";
 		end if;
@@ -106,5 +109,30 @@ package body Graphic_Lab is
 		end if;
 		return color_line;
 	end function draw_circle;
- 
+	
+	function convSEG (N : std_logic_vector(3 downto 0)) return std_logic_vector is
+		variable ans:std_logic_vector(6 downto 0);
+	begin
+		Case N is
+			when "0000" => ans:="1000000";	 
+			when "0001" => ans:="1111001";
+			when "0010" => ans:="0100100";
+			when "0011" => ans:="0110000";
+			when "0100" => ans:="0011001";
+			when "0101" => ans:="0010010";
+			when "0110" => ans:="0000010";
+			when "0111" => ans:="1111000";
+			when "1000" => ans:="0000000";
+			when "1001" => ans:="0010000";	   
+			when "1010" => ans:="0001000";
+			when "1011" => ans:="0000011";
+			when "1100" => ans:="1000110";
+			when "1101" => ans:="0100001";
+			when "1110" => ans:="0000110";
+			when "1111" => ans:="0001110";				
+			when others=> ans:="1111111";
+		end case;	
+	return ans;
+end function convSEG;
+
 end package body Graphic_Lab;
