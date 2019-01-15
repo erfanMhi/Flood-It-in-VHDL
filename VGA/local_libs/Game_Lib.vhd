@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 package game_lib is
 
-	type game_states is (input_catch, pre_start, started, lost, win);
+	type game_states is (pre_start, started, lost, win);
 	type color_data is array (0 to 4) of std_logic_vector(11 downto 0);
 	constant colors : color_data := (
 		"111100000000", -- red

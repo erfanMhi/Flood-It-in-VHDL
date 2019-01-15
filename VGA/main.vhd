@@ -115,9 +115,6 @@ architecture CAD961Test of CAD961Test is
 				RESET				: in std_logic;
 				ColorOut			: out std_logic_vector(11 downto 0); -- RED & GREEN & BLUE
 				game_state_b	: in game_states;
-				row_len_b 		: in integer;
-				column_len_b 	: in integer;
-				SQUAREWIDTH		: in std_logic_vector(7 downto 0);
 				ScanlineX		: in std_logic_vector(10 downto 0);
 				ScanlineY		: in std_logic_vector(10 downto 0);
 				white_num		: out integer;
@@ -168,9 +165,6 @@ begin
 				RESET				=> not RESET_N,
 				ColorOut			=> ColorTable,
 				game_state_b	=> game_state_reg,
-				row_len_b 		=> row_num,
-				column_len_b 	=> column_num,
-				SQUAREWIDTH		=> "00011001",
 				ScanlineX		=> ScanlineX,
 				ScanlineY		=> ScanlineY,
 				white_num		=> white_number,
@@ -194,13 +188,14 @@ begin
 				HEX4_s => HEX4
 				--HEX5_s => HEX5	
 			);
+			
 	 ------- Second Calculator -------
-	 second_calc: process(CLOCK_50, RESET_N) 
+	 second_calc: process(CLOCK3_50, RESET_N) 
 	 begin
 		if (RESET_N='0') then
 			Counter <= 0;
 			time_counter_g <= 0;
-		elsif (rising_edge(CLOCK_50)) then
+		elsif (rising_edge(CLOCK3_50)) then
 			if (game_state_reg = started) then
 				if (Counter = 50000000) then
 					Counter <= 0;
@@ -217,11 +212,11 @@ begin
 	 
 	 
 	 --------- Move Counter Calc --------
-	 process(key, RESET_N) 
+	 process(CLOCK3_50, RESET_N) 
 	 begin
 		if (RESET_N='0') then
 			move_counter_g <= 0;
-		elsif (rising_edge(CLOCK_50)) then
+		elsif (rising_edge(CLOCK3_50)) then
 			if (game_state_reg = started) then
 				if (key_reg /= key) then
 					if (key(0) = '0') then
@@ -237,73 +232,22 @@ begin
 			end if;
 		end if;
 	 end process;
-	 
-	color_processes:
-	for I in 0 to 3 generate
-		 process(key, RESET_N) 
-		 begin
-			if (RESET_N='0') then
-				selected_color <= colors(0);
-			elsif (rising_edge(key(I))) then
-				selected_color <= colors(I);
-			end if;
-		 end process;
-   end generate color_processes;
 	
-	process (CLOCK_50, ResET_N)
+	process (CLOCK3_50, ResET_N)
 	begin
 	if (ResET_N = '0') then
 		key_reg <= "1111";
-	elsif (rising_edge(CloCK_50)) then
+	elsif (rising_edge(CLOCK3_50)) then
 		key_reg <= key;
 	end if;
 	end process;
-	
-	----- keys in the input_catch
-	 process(key, RESET_N) 
-	 begin
-		if (RESET_N='0') then
-			row_num <= 10;
-			column_num <= 10;
-		elsif (rising_edge(CLOCK_50)) then
-			if (game_state_reg = input_catch) then
-				if (key_reg /= key) then
-					if (key(0) = '0') then
-						row_num <= row_num +1;
-					elsif (key(1) = '0') then
-						row_num <= row_num -1;
-					elsif (key(2) = '0') then
-						column_num <= column_num +1;
-					elsif (key(3) = '0') then
-						column_num <= column_num -1;
-					end if;
-					
-					if (row_num > 40) then
-						row_num <= 40;
-					end if;
-					
-					if (row_num < 10) then
-						row_num <= 10;
-					end if;
-					
-					if (column_num > 40) then
-						column_num <= 40;
-					end if;
-					
-					if (column_num < 10) then
-						column_num <= 10;
-					end if;
-				end if;
-			end if;
-		end if;
-	 end process;
-	 
-	 
-	 game_state_reg_proc: process(CLOCK_50, RESET_N) 
+
+ 
+	 game_state_reg_proc: process(CLOCK3_50, RESET_N) 
 	 begin
 		if (RESET_N='0') then
 			game_state_reg <= pre_start;
-		elsif (rising_edge(CLOCK_50)) then
+		elsif (rising_edge(CLOCK3_50)) then
 			game_state_reg <= game_state_next;
 		end if;
 	 end process;
@@ -312,10 +256,6 @@ begin
 	 begin
 		game_state_next <= game_state_reg;
 		case game_state_reg is
-			when input_catch => 
-				if (Switch(0) ='1') then
-					game_state_next <= pre_start;					
-				end if;
 			when pre_start =>
 				if (key_reg /= key) then
 					if (key(0) = '0') then
@@ -329,6 +269,9 @@ begin
 					end if;
 				end if;
 			when started =>
+				if time_counter_g = 99 then
+					game_state_next <= lost;
+				end if;
 			when lost =>
 			when win =>
 		end case;

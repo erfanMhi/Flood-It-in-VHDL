@@ -33,20 +33,12 @@ begin
 	 variable tmp: std_logic_vector(11 downto 0);
 	 begin
 		case game_state_s is
-			when input_catch =>
-				tmp := to_bcd(std_logic_vector(to_unsigned(rows, 8)));
-				HEX0_s <= convSEG(tmp(3 downto 0));
-				HEX1_s <= convSEG(tmp(7 downto 4));
-				
-				tmp := to_bcd(std_logic_vector(to_unsigned(columns, 8)));
-				HEX2_s <= convSEG(tmp(3 downto 0));
-				HEX3_s <= convSEG(tmp(7 downto 4));
 			when pre_start =>
 				tmp := to_bcd(std_logic_vector(to_unsigned(11, 8)));
 				HEX0_s <= convSEG(tmp(3 downto 0));
 				HEX1_s <= convSEG(tmp(7 downto 4));
 				
-				tmp := to_bcd(std_logic_vector(to_unsigned(13, 8)));
+				tmp := to_bcd(std_logic_vector(to_unsigned(1, 8)));
 				HEX2_s <= convSEG(tmp(3 downto 0));
 				HEX3_s <= convSEG(tmp(7 downto 4));
 			when started =>
