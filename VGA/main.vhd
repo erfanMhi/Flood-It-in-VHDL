@@ -269,9 +269,9 @@ begin
 					end if;
 				end if;
 			when started =>
-				if time_counter_g = 99 then
-					game_state_next <= lost;
-				end if;
+				--if time_counter_g = 99 then
+				--	game_state_next <= lost;
+				--end if;
 			when lost =>
 			when win =>
 		end case;
