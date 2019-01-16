@@ -94,7 +94,7 @@ architecture CAD961Test of CAD961Test is
 	signal selected_color: std_logic_vector(11 downto 0);
 	signal row_num, column_num: integer := 10;
 	signal key_reg: std_logic_vector(3 downto 0) := "1111";
-	signal white_number: integer;
+	signal is_over_t: std_logic;
 	
 	Component VGA_controller
 		port ( CLK_50MHz		: in std_logic;
@@ -117,10 +117,10 @@ architecture CAD961Test of CAD961Test is
 				game_state_b	: in game_states;
 				ScanlineX		: in std_logic_vector(10 downto 0);
 				ScanlineY		: in std_logic_vector(10 downto 0);
-				white_num		: out integer;
+				is_over		: out std_logic;
 				key_reg_b		: in std_logic_vector(3 downto 0);
-				keys_b			: in std_logic_vector(3 downto 0);
-				HEX5_b	: out std_logic_vector(6 downto 0)
+				keys_b			: in std_logic_vector(3 downto 0)
+				--HEX5_b	: out std_logic_vector(6 downto 0)
 		);
 	end component;
 	
@@ -135,8 +135,8 @@ architecture CAD961Test of CAD961Test is
 				HEX1_s	: out std_logic_vector(6 downto 0);
 				HEX2_s	: out std_logic_vector(6 downto 0);
 				HEX3_s	: out std_logic_vector(6 downto 0);
-				HEX4_s	: out std_logic_vector(6 downto 0)
-				--HEX5_s	: out std_logic_vector(6 downto 0)		
+				HEX4_s	: out std_logic_vector(6 downto 0);
+				HEX5_s	: out std_logic_vector(6 downto 0)		
 		);
 	end component;
 	
@@ -167,10 +167,10 @@ begin
 				game_state_b	=> game_state_reg,
 				ScanlineX		=> ScanlineX,
 				ScanlineY		=> ScanlineY,
-				white_num		=> white_number,
+				is_over		=> is_over_t,
 				key_reg_b		=> key_reg,
-				keys_b			=> key,
-				HEX5_b 			=> HEX5
+				keys_b			=> key
+				--HEX5_b 			=> HEX5
 			);
 			
 	 ------- Seven Segment Manager -----
@@ -185,8 +185,8 @@ begin
 				HEX1_s => HEX1,
 				HEX2_s => HEX2,
 				HEX3_s => HEX3,
-				HEX4_s => HEX4
-				--HEX5_s => HEX5	
+				HEX4_s => HEX4,
+				HEX5_s => HEX5	
 			);
 			
 	 ------- Second Calculator -------
@@ -269,12 +269,16 @@ begin
 					end if;
 				end if;
 			when started =>
-				--if time_counter_g = 99 then
-				--	game_state_next <= lost;
-				--end if;
+				if time_counter_g = 99 then
+					game_state_next <= lost;
+				elsif is_over_t = '1' then
+					game_state_next <= win;
+				end if;
 			when lost =>
 			when win =>
 		end case;
 	 end process;
+	 
+	 LEDR <= "1111111111" when (game_state_reg=lost or game_state_reg=win) else "0000000000";
 	 
 end CAD961Test;

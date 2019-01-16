@@ -21,8 +21,8 @@ entity Board is
 			ScanlineY		: in std_logic_vector(10 downto 0);
 			is_over			: out std_logic;
 			key_reg_b		: in std_logic_vector(3 downto 0);
-			keys_b			: in std_logic_vector(3 downto 0);
-			HEX5_b	: out std_logic_vector(6 downto 0)
+			keys_b			: in std_logic_vector(3 downto 0)
+			--HEX5_b	: out std_logic_vector(6 downto 0)
   );
 end Board;
 
@@ -45,6 +45,8 @@ architecture Behavioral of Board is
   
    signal rnd_val: std_logic_vector(31 downto 0);
 
+	signal is_over_t: std_logic := '0';
+	
 	signal ex_color, selected_color, ex_color_reg, selected_color_reg: std_logic_vector(11 downto 0);	
 	signal clicked_state, clicked_state_reg: std_logic;
 	
@@ -99,8 +101,8 @@ begin
 	ColorOut <= ColorOutput;
 
 	--- counting white cells ---
-	white_num <= ((selected_counter + white_counter) = 100);
-	
+	is_over_t <=  '1' when ((selected_counter + white_counter) = 100) else '0';
+	is_over <= is_over_t;
 	
 	---- Process to count white numbers ----
 	white_count_proc: process(mem)
@@ -181,6 +183,8 @@ begin
 	
 	
 	end process;
+	
+	--HEX5_b <= convSEG("000" & is_over_t);
 		
 	data_logic_proc: process(is_initialized_reg, wr_i_reg, wr_j_reg, rnd_val, selected_color_reg, ex_color_reg, stackEmpty_t)
 	begin
@@ -198,7 +202,7 @@ begin
 				clicked_state <= '0';
 				push_pop_t <= '0';
 				en_t <= '0';
-				HEX5_b <= "0000000";
+				--HEX5_b <= "0000000";
 				case game_state_b is
 				when pre_start =>
 					if is_initialized_reg = '0' then
@@ -217,11 +221,76 @@ begin
 						end if;
 					else
 						is_initialized <= '1';
+						if (key_reg_b /= keys_b) then	
+							if (keys_b(0) = '0') then
+								if (colors(0) /= mem(1, 1)) then
+									push_pop_t <= '1';
+									en_t <= '1';
+									cs_wr_t <= '1';
+									
+									clicked_state <= '1';
+								
+									selected_color <= Colors(0);
+									ex_color <= mem(1,1);
+									
+									dataIn_t <= "00010001";
+									
+									mem_wr_i <= 1;
+									mem_wr_j <= 1;
+									data_wr_t <= Colors(0);
+								end if;
+							elsif (keys_b(1) = '0') then
+								if (colors(1) /= mem(1, 1)) then
+									selected_color <= Colors(1);
+									ex_color <= mem(1,1);
+									dataIn_t <= "00010001";
+									clicked_state <= '1';
+									push_pop_t <= '1';
+									en_t <= '1';
+									cs_wr_t <= '1';
+									
+									mem_wr_i <= 1;
+									mem_wr_j <= 1;
+									data_wr_t <= Colors(1);
+								
+								end if;
+							elsif (keys_b(2) = '0') then
+								if (colors(2) /= mem(1, 1)) then
+									selected_color <= Colors(2);
+									ex_color <= mem(1,1);
+									dataIn_t <= "00010001";
+									clicked_state <= '1';
+									push_pop_t <= '1';
+									en_t <= '1';
+									cs_wr_t <= '1';
+									
+									mem_wr_i <= 1;
+									mem_wr_j <= 1;
+									data_wr_t <= Colors(2);
+								
+								end if;
+							elsif (keys_b(3) = '0') then
+								if (colors(3) /= mem(1, 1)) then
+									selected_color <= Colors(3);
+									ex_color <= mem(1,1);
+									dataIn_t <= "00010001";
+									clicked_state <= '1';
+									push_pop_t <= '1';
+									en_t <= '1';
+									cs_wr_t <= '1';
+									
+									mem_wr_i <= 1;
+									mem_wr_j <= 1;
+									data_wr_t <= Colors(3);
+								
+								end if;
+							end if;
+						end if;
 					end if;
 				when started =>
 					case clicked_state_reg is
 					when '0' =>
-						HEX5_b <= "0000001";
+						--HEX5_b <= "0000001";
 						if (key_reg_b /= keys_b) then	
 							if (keys_b(0) = '0') then
 								if (colors(0) /= mem(1, 1)) then
