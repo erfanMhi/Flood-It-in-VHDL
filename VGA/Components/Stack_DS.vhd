@@ -1,6 +1,3 @@
-
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
@@ -10,7 +7,7 @@ use ieee.numeric_std.all;
 entity Stack_DS is
 	generic(
 		   Data_Width : integer := 8; 
-		   Addr_Width : integer := 10
+		   Addr_Width : integer := 7
 		   );
 	 port(
 		 clk, reset, en : in STD_LOGIC;
@@ -25,7 +22,7 @@ Architecture Stack_DS_Arch of Stack_DS is
 	signal pointer_reg, pointer_next: std_logic_vector(Addr_Width-1 downto 0) := (others => '0');		  
 	signal input, output: std_logic_vector(Data_Width-1 downto 0); 
 	signal empty, full: std_logic;
-	signal push_pop_n: std_logic;
+	--signal push_pop_n: std_logic;
 	signal read_pointer: std_logic_vector(Addr_Width-1 downto 0) := (others => '0');
 begin
 	memory : entity work.DualPortMemory(DualPortMemory)
@@ -34,8 +31,6 @@ begin
 				   CS2 => '1',
 				   Data1 => input,
 				   Data2 => output,
-				   WE1 => '1',
-				   WE2 => '0',
 				   Addr1 => pointer_reg,
 				   Addr2 => read_pointer
 				   );
@@ -44,7 +39,7 @@ begin
 	StackFull <= full;
 	StackEmpty <= empty;  
 	read_pointer <= (pointer_reg -1) when to_integer(unsigned(pointer_reg)) /= 0 else pointer_reg;
-	push_pop_n <= not push_pop;
+	--push_pop_n <= not push_pop;
 		
 		
 	input <= DataIn;
@@ -55,7 +50,7 @@ begin
 	begin
 		if reset = '1' then
 			pointer_reg <= (others => '0');
-		elsif (clk'event and clk='1') then
+		elsif (rising_edge(clk)) then
 			pointer_reg <= pointer_next;	
 		end if;
 	end process;

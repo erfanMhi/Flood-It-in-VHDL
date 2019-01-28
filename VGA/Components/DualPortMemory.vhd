@@ -29,18 +29,16 @@ use IEEE.numeric_STD.all;
 entity DualPortMemory is
 	 generic(
 	        Data_Width : integer := 8;
-	 	    Addr_Width : integer := 10
+	 	    Addr_Width : integer := 7
 		    );
 	 port(
 		 clk : in STD_LOGIC;
 		 CS1 : in STD_LOGIC;
 		 CS2 : in STD_LOGIC;
-		 WE1 : in STD_LOGIC;
-		 WE2 : in STD_LOGIC;
 		 Addr1 : in STD_LOGIC_VECTOR(Addr_Width-1 downto 0);
 		 Addr2 : in STD_LOGIC_VECTOR(Addr_Width-1 downto 0);
-		 Data1 : inout STD_LOGIC_VECTOR(Data_Width-1 downto 0);
-		 Data2 : inout STD_LOGIC_VECTOR(Data_Width-1 downto 0)
+		 Data1 : in STD_LOGIC_VECTOR(Data_Width-1 downto 0);
+		 Data2 : out STD_LOGIC_VECTOR(Data_Width-1 downto 0)
 	     );
 end DualPortMemory;
 
@@ -53,17 +51,13 @@ signal Ram : MyRam;
 
 begin
 	
-	Data1 <= Ram(to_integer(unsigned(Addr1))) when (CS1 = '1' and WE1 = '0') else (others => 'Z');
-	Data2 <= Ram(to_integer(unsigned(Addr2))) when (CS2 = '1' and WE2 = '0') else (others => 'Z');
+	Data2 <= Ram(to_integer(unsigned(Addr2))) when (CS2 = '1') else (others => '0');
 			
 	process(clk)
 	begin	
 		if rising_edge(clk) then
-			if (CS1 = '1' and WE1 = '1') then 
+			if (CS1 = '1') then 
 				Ram(to_integer(unsigned(Addr1))) <= Data1;
-			end if;
-			if (CS2 = '1' and WE2 = '1') then 
-				Ram(to_integer(unsigned(Addr2))) <= Data2;
 			end if;
 		end if;
 	end process;
